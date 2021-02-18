@@ -1,4 +1,4 @@
-def settings():
+def configs():
     return {
         "prefixes": ['a.', 'A.'],
         "description": "Description",

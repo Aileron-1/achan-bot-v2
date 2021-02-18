@@ -3,22 +3,26 @@
 '''
 import discord
 from discord.ext import commands
-import settings
+import configparser
+
+import configs
+
 
 class Melon:
     def __init__(self):
-        self.settings = settings.settings()
-        self.description = self.settings['description']
+        cp = configparser.ConfigParser()
+        self.configs = configs.configs()
+        self.env = cp.read('.env')
+        self.description = self.configs['description']
         self.bot = None
         self.activity = discord.Game(name="Idol politics", type=1)
         self.maintenance_mode = True
-        self.env = {}
 
     def run(self):
         print('Running bot. Connecting to Discord...')
         self.bot = commands.Bot(
-            command_prefix=self.settings.bot['prefixes'], 
-            description=self.settings.bot['description'],
+            command_prefix=self.configs['prefixes'], 
+            description=self.configs['description'],
             help_command=None, 
             case_insensitive=True 
         )
