@@ -8,10 +8,12 @@ import configparser
 import asyncio
 import json
 
-class Melon():
+class MelonClient():
     def __init__(self):
         with open('melon.json') as settings:
             self.settings = json.load(settings)
+        with open('app.json') as app:
+            self.app = json.load(app)
         self.env = configparser.ConfigParser()
         self.env.read('.env')
         self.description = self.settings['description']
@@ -24,6 +26,9 @@ class Melon():
             help_command=None, 
             case_insensitive=True 
             )
+        self.db = []
+
+
         @self.bot.event
         async def on_ready():
             print('Logged in to user: %s' % self.bot.user.name)
@@ -41,26 +46,37 @@ class Melon():
             if message.channel.id in self.settings['blocked_channels']:
                 return
             # Display maintenance message and stop commands
-            if self.env['App']['MAINTENANCE_MODE']:
+            if self.maintenance_mode:
+                print('mente')
                 if ctx.valid:
                     await message.channel.send(self.settings['maintenance_message'])
                     return
             await self.bot.process_commands(message)
 
-    def start(self):
-        print('Running bot. Connecting to Discord...')
-        # Add async tasks to run concurrently with bot
-        # self.bot.loop.create_task(self.shutdown())
-        # Run the bot loop
+    '''Run loop, with bot tasks and other concurrent support tasks
+    '''
+    def run(self):
         self.bot.run(self.env['App']['DISCORD_TOKEN'])
+        # self.loop.create_task(self.start())
+        # # Add async tasks to run concurrently with bot
 
-    async def shutdown(self):
-        print('I will kill')
-        await asyncio.sleep(7)
-        print('logging out')
-        await self.bot.login(self.env['App']['DISCORD_TOKEN'], bot=True)
+        # try:
+        #     self.loop.run_until_complete(self.start(*args, **kwargs))
+        # except KeyboardInterrupt:
+        #     self.loop.run_until_complete(self.bot.logout())
+        #     # cancel all tasks lingering
+        # finally:
+        #     self.loop.close()
+
+
+    async def start(self):
+        print('Running bot. Connecting to Discord...')
+        return await self.bot.start(self.env['App']['DISCORD_TOKEN'], bot=True)
+
+    def register_controllers(self, controllers):
+        for controller in controllers:
+            self.bot.add_cog(controller(self))
 
 if __name__ == '__main__':
     m = Melon()
-    m.start()
-    
+    m.run()

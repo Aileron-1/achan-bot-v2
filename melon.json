@@ -1,7 +1,8 @@
 {
     "prefixes": ["t.", "T."],
     "description": "Description",
-    "maintenance_message": "Sorry! I'm resting for a bit to do some maintenance. Come back in a few minutes!",
+    "maintenance_message": "Sorry! I'm resting for a while to do some maintenance. Come back in a few minutes!",
+    "reboot_message": "I'm in the middle of a reboot, please wait a minute!",
     "blocked_channels": [
         661504235464163349,
         696054651782692937
