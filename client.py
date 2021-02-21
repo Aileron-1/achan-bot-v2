@@ -28,13 +28,12 @@ class MelonClient():
             )
         self.db = []
 
-
         @self.bot.event
         async def on_ready():
             print('Logged in to user: %s' % self.bot.user.name)
-            print('All ready. Let\'s go!')
             if self.activity:
                 await self.bot.change_presence(status=discord.Status.online, activity=self.activity)
+            print('Bot has finished loading. Let\'s go!')
 
         @self.bot.event
         async def on_message(message):

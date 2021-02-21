@@ -1,12 +1,12 @@
 from client import MelonClient
 import discord
 from discord.ext import commands
-from controllers.TestController import TestController
+from controllers.InfoController import InfoController
 
 db_connection = ''
 
 controllers = [
-    TestController,
+    InfoController,
 ]
 
 m = MelonClient()
