@@ -15,7 +15,7 @@ class Database:
         """ Takes a table name and list of columns to create a table
         """
         # create columns
-        table_columns = 'id INTEGER PRIMARY KEY AUTO_INCREMENT'
+        table_columns = 'id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT'
         for f in columns:
             table_columns += ', '+f
         table_columns = table_columns
@@ -136,7 +136,7 @@ if __name__ == '__main__':
 
     db.reset_table('testable')
     ttb = db.create_table('testable',[
-        'user INTEGER',
+        'user BIGINT UNSIGNED',
         'words TEXT'
         ])
     ttb.insert({

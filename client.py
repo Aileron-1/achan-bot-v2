@@ -13,8 +13,6 @@ class MelonClient():
     def __init__(self):
         with open('melon.json') as settings:
             self.settings = json.load(settings)
-        with open('app.json') as app:
-            self.app = json.load(app)
         self.env = configparser.ConfigParser()
         self.env.read('.env')
         self.description = self.settings['description']
@@ -27,11 +25,12 @@ class MelonClient():
             help_command=None, 
             case_insensitive=True 
             )
+        mysql = self.env['MySQL']
         self.db = Database(
-            host=self.env['MySQL'][''],
-            user='achan',
-            password='Adk5+P5L@p&dy^G^',
-            database='achan'
+            host=mysql['HOST'],
+            user=mysql['USERNAME'],
+            password=mysql['PASSWORD'],
+            database=mysql['DATABASE']
             )
 
         @self.bot.event

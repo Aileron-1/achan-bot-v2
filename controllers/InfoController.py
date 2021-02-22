@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord import Embed
 
 class InfoController(commands.Cog):
     def __init__(self, melon):
@@ -37,5 +38,20 @@ class InfoController(commands.Cog):
 `bug <text here>` - Report an A-chan or YAGOO bug, no matter how small. Suggestions also welcome.
     ''', inline=False)
         await ch.send(embed=emb)
+
+
+        # save it
+        ttb = self.db.get_table('testable')
+        ttb.insert({
+            'user': ctx.message.author.id,
+            'words': ctx.message.content
+        })
+
+
+    @commands.command()
+    async def abc(self, ctx):
+        ch = ctx.message.channel
+        ttb = self.db.get_table('testable')
+        await ch.send(str(ttb.get()))
 
 
