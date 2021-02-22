@@ -7,6 +7,7 @@ from discord.ext import commands
 import configparser
 import asyncio
 import json
+from database import Database
 
 class MelonClient():
     def __init__(self):
@@ -26,7 +27,12 @@ class MelonClient():
             help_command=None, 
             case_insensitive=True 
             )
-        self.db = []
+        self.db = Database(
+            host=self.env['MySQL'][''],
+            user='achan',
+            password='Adk5+P5L@p&dy^G^',
+            database='achan'
+            )
 
         @self.bot.event
         async def on_ready():
