@@ -73,7 +73,6 @@ class MelonClient():
         # finally:
         #     self.loop.close()
 
-
     async def start(self):
         print('Running bot. Connecting to Discord...')
         return await self.bot.start(self.env['App']['DISCORD_TOKEN'], bot=True)

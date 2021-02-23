@@ -104,7 +104,7 @@ class Table:
                     # this should be part of model
 
     def update(self, item_id, val_type, amount):
-        sql_command = "UPDATE '%s' SET '%s' = ? WHERE id = ?;" % (self.table_name, val_type)  # can this be entirely '?' style?
+        sql_command = "UPDATE '%s' SET '%s' = %s WHERE id = %s;" % (self.table_name, val_type, '%s', '%s')
         self.db.cursor.execute(sql_command, (amount, item_id))
         self.db.connection.commit()
 
@@ -139,7 +139,7 @@ if __name__ == '__main__':
         'user BIGINT UNSIGNED',
         'words TEXT'
         ])
-    ttb.insert({
+    ts = ttb.insert({
         'user': 1919191919,
         'words': 'test words here'
         })

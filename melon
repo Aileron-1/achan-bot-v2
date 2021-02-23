@@ -1,3 +1,6 @@
+''' Melon Command Line Interface 
+'''
+
 import sys
 
 def serve():
@@ -13,7 +16,6 @@ def refresh():
         migrate()
     else:
         print('cancelled')
-
 
 args = sys.argv
 command = 'serve'  # default command
