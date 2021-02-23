@@ -1,0 +1,37 @@
+import sys
+
+def serve():
+    print('serving')
+
+def migrate():
+    print('migrating')
+
+def refresh():
+    reply = input('are you sure? (y/N)')
+    if (reply.lower() == 'y'):
+        print('refreshing')
+        migrate()
+    else:
+        print('cancelled')
+
+
+args = sys.argv
+command = 'serve'  # default command
+subcommand = ''
+
+# Get commands
+if len(args) > 1:
+    command = args[1]
+if len(args) > 2:
+    subcommand = args[2]
+
+# Run based on command
+if command == 'migrate':
+    if subcommand == 'fresh':
+        refresh()
+    else:
+        migrate()
+
+if command == 'serve':
+    serve()
+
