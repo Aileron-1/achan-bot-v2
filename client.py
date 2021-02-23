@@ -26,18 +26,22 @@ class MelonClient():
             case_insensitive=True 
             )
         mysql = self.env['MySQL']
-        self.db = Database(
-            host=mysql['HOST'],
-            user=mysql['USERNAME'],
-            password=mysql['PASSWORD'],
-            database=mysql['DATABASE']
-            )
+        self.db = Database()
 
         @self.bot.event
         async def on_ready():
             print('Logged in to user: %s' % self.bot.user.name)
             if self.activity:
                 await self.bot.change_presence(status=discord.Status.online, activity=self.activity)
+            print('Connecting to database.')
+            await self.database.connect(
+                loop=self.bot.loop,
+                host=mysql['HOST'],
+                user=mysql['USERNAME'],
+                port=mysql['PORT'],
+                password=mysql['PASSWORD'],
+                database=mysql['DATABASE']
+                )
             print('Bot has finished loading. Let\'s go!')
 
         @self.bot.event
