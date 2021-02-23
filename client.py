@@ -27,7 +27,6 @@ class MelonClient():
             )
         mysql = self.env['MySQL']
         self.db = Database(
-            loop=self.bot.loop
             host=mysql['HOST'],
             user=mysql['USERNAME'],
             password=mysql['PASSWORD'],

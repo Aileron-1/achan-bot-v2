@@ -10,7 +10,7 @@ def migrate():
     print('migrating')
 
 def refresh():
-    reply = input('are you sure? (y/N)')
+    reply = input('are you sure you want to refresh the database? (y/N)')
     if (reply.lower() == 'y'):
         print('refreshing')
         migrate()
@@ -19,13 +19,16 @@ def refresh():
 
 args = sys.argv
 command = 'serve'  # default command
-subcommand = ''
+subcommand = None
+parameter = None
 
 # Get commands
 if len(args) > 1:
     command = args[1]
 if len(args) > 2:
     subcommand = args[2]
+if len(args) > 3:
+    parameter = args[3]
 
 # Run based on command
 if command == 'migrate':
@@ -36,4 +39,9 @@ if command == 'migrate':
 
 if command == 'serve':
     serve()
+
+if command == 'make':
+    if subcommand == 'migration':
+        if parameter:
+            print('making migration file:', parameter)
 
