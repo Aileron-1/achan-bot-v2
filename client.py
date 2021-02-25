@@ -25,7 +25,6 @@ class MelonClient():
             help_command=None, 
             case_insensitive=True 
             )
-        mysql = self.env['MySQL']
         self.db = Database()
 
         @self.bot.event
@@ -34,13 +33,13 @@ class MelonClient():
             if self.activity:
                 await self.bot.change_presence(status=discord.Status.online, activity=self.activity)
             print('Connecting to database.')
-            await self.database.connect(
+            await self.db.connect(
                 loop=self.bot.loop,
-                host=mysql['HOST'],
-                user=mysql['USERNAME'],
-                port=mysql['PORT'],
-                password=mysql['PASSWORD'],
-                database=mysql['DATABASE']
+                host=self.env.get('MySQL','HOST'),
+                user=self.env.get('MySQL','USERNAME'),
+                port=self.env.getint('MySQL','PORT'),
+                password=self.env.get('MySQL','PASSWORD'),
+                database=self.env.get('MySQL','DATABASE')
                 )
             print('Bot has finished loading. Let\'s go!')
 
@@ -61,9 +60,9 @@ class MelonClient():
                     return
             await self.bot.process_commands(message)
 
-    '''Run loop, with bot tasks and other concurrent support tasks
-    '''
     def run(self):
+        """ Run loop#, with bot tasks and other concurrent support tasks
+        """
         self.bot.run(self.env['App']['DISCORD_TOKEN'])
         # self.loop.create_task(self.start())
         # # Add async tasks to run concurrently with bot

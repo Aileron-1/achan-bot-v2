@@ -42,7 +42,7 @@ class InfoController(commands.Cog):
 
         # save it
         ttb = self.db.get_table('testable')
-        ttb.insert({
+        await ttb.insert({
             'user': ctx.message.author.id,
             'words': ctx.message.content
         })

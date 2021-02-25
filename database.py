@@ -26,14 +26,14 @@ class Database:
         table_columns = 'id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT'
         for f in columns:
             table_columns += ', '+f
-        table_columns = table_columns
         # create table
+        print('Creating table %s.'%table_name)
         statement = "CREATE TABLE IF NOT EXISTS %s(%s); " % (table_name, table_columns)
         await self.cursor.execute(statement)
         await self.connection.commit()
         return await self.get_table(table_name)
 
-    async def reset_table(self, table_name):
+    async def drop_table(self, table_name):
         """ Simply drops the table if it exists.
         """
         print('Dropping table %s!'%table_name)
@@ -143,9 +143,8 @@ if __name__ == '__main__':
             password='Adk5+P5L@p&dy^G^',
             database='HoloRes'
             )
-        print(db)
 
-        await db.reset_table('testable')
+        await db.drop_table('testable')
         ttb = await db.create_table('testable',[
             'user BIGINT UNSIGNED',
             'words TEXT'

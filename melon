@@ -2,18 +2,83 @@
 '''
 
 import sys
+from datetime import datetime
+import glob
+import importlib.util
+from database import Database
+import asyncio
+import configparser
+
+loop = asyncio.get_event_loop()
+
+
+async def run_migration_funcs(db, funcs):
+    env = configparser.ConfigParser()
+    env.read('.env')
+    mysql = env['MySQL']
+    await db.connect(
+        loop=loop,
+        host=env.get('MySQL','HOST'),
+        user=env.get('MySQL','USERNAME'),
+        port=env.getint('MySQL','PORT'),
+        password=env.get('MySQL','PASSWORD'),
+        database=env.get('MySQL','DATABASE')
+        )
+
+    for func in funcs:
+        await func()
+        
+
 
 def serve():
     print('serving')
 
+
+def get_migrations(db):
+    # Get all migrations
+    migration_files = sorted(glob.glob("database/migrations/*migration.py"))
+    migrations = []
+    i = 0
+    for migration_file in migration_files:
+        i += 1
+        spec = importlib.util.spec_from_file_location('migration%s'%i, migration_file)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        migrate_class = module.Migration(db)
+        migrations.append(migrate_class)
+    return migrations
+
 def migrate():
     print('migrating')
+    db = Database()
+    
+    migrations = get_migrations(db)
+
+    ups = []
+    for m in migrations:
+        ups.append(m.up)
+
+    loop.run_until_complete(run_migration_funcs(db, ups))
+    
+
+def remigrate():
+    db = Database()
+    
+    migrations = get_migrations(db)
+
+    upsdowns = []
+    for m in migrations:
+        upsdowns.append(m.down)
+    for m in migrations:
+        upsdowns.append(m.up)
+
+    loop.run_until_complete(run_migration_funcs(db, upsdowns))
 
 def refresh():
     reply = input('are you sure you want to refresh the database? (y/N)')
     if (reply.lower() == 'y'):
         print('refreshing')
-        migrate()
+        remigrate()
     else:
         print('cancelled')
 
@@ -43,5 +108,27 @@ if command == 'serve':
 if command == 'make':
     if subcommand == 'migration':
         if parameter:
-            print('making migration file:', parameter)
+            now = datetime.today().strftime('%Y_%m_%d_%H%M%S')
+            migration_name = parameter.title().replace(' ', '')
+            filename = '%s_%s_migration' % (now, migration_name.lower())
+            classname = '%sMigration' % (migration_name.replace('_',''))
+            migration_file = """
+class Migration():
+    def __init__(self, db):
+        self.db = db
+
+    async def up(self):
+        
+    async def down(self):
+        """
+            with open('database/migrations/'+filename+'.py', 'w') as f:
+                f.write(migration_file)
+            print('created migration file:', filename)
+        else:
+            print('need a migration name')
+        
+
+
+
+
 
